@@ -1,0 +1,119 @@
+html, body {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+/* search section */
+#title {
+  height: 100%;
+  width: 100%;
+}
+
+.search-div {
+  padding: 15% 0;
+}
+
+.big-heading {
+  font-size: 4.5rem;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+
+.searchbar {
+  margin-bottom: auto;
+  margin-top: auto;
+  height: 60px;
+  background-color: #353b48;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.search_input {
+  color: white;
+  border: 0;
+  outline: 0;
+  background: none;
+  width: 450px;
+  caret-color: transparent;
+  line-height: 40px;
+  transition: width 0.4s linear;
+}
+
+.search_icon {
+  height: 40px;
+  width: 40px;
+  float: right;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+}
+
+/* testimoninal section */
+#testimonials {
+  background-color: #ff4646;
+  color: white;
+  height: 90%;
+}
+
+.testimonial-image {
+  width: 15%;
+  border-radius: 100%;
+
+  margin: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-text {
+  font-size: 5rem;
+  margin-bottom: 50px;
+}
+
+#carouselExampleControls {
+  height: 100%
+}
+.carousel-item {
+  padding: 7% 15%;
+}
+
+/* login section */
+.login-card {
+  margin: 10px auto 0;
+}
+
+
+/* footer section */
+#footer {
+  padding: 5% 10%;
+}
+
+.footer-paragraph {
+  color: #8f8f8f;
+}
+
+.footer-icon {
+  margin: 0 10px 30px;
+}
