@@ -1,0 +1,12 @@
+<% if(fail.length===1) { %>
+  <div class="alert alert-danger" role="alert">
+    <strong>hata! </strong><%=fail%>
+  </div>
+<% } else if(success.length===1) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>tebrikler! </strong> <%=success%>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>

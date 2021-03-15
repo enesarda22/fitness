@@ -8,6 +8,8 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require("mongoose-findorcreate");
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -17,6 +19,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use(cookieParser());
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -26,6 +29,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(flash());
+
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -33,7 +38,9 @@ const options = {
   useCreateIndex: true,
 };
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/fitnessDB", options);
+////uncomment to use local db
+// mongoose.connect("mongodb://localhost:27017/fitnessDB", options);
+mongoose.connect("mongodb+srv://admin-enes:" + process.env.PASSWORD + "@cluster0.drsol.mongodb.net/fitnessDB", options);
 mongoose.set("useCreateIndex", true);
 mongoose.set('useFindAndModify', false);
 
@@ -67,7 +74,7 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
-    // console.log(profile);
+    console.log(profile);
 
     User.findOrCreate({
       googleId: profile.id
@@ -78,7 +85,10 @@ passport.use(new GoogleStrategy({
 ));
 
 app.get("/", function(req, res) {
-  res.render("home");
+  res.render("home", {
+    success: req.flash('success'),
+    fail: req.flash('error')
+  });
 });
 
 app.get("/auth/google", passport.authenticate('google', {
@@ -91,53 +101,56 @@ app.get("/auth/google/secrets",
   }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.send('successful authentication');
+    req.flash('success', 'basarili bir sekilde google ile giris yaptiniz');
+    res.redirect("/");
   });
 
 app.get("/login", function(req, res) {
-  res.render("login");
+  res.render("login", {
+    success: req.flash('success'),
+    fail: req.flash('error')
+  });
 });
 
 app.get("/register", function(req, res) {
-  res.render("register");
+  res.render("register", {
+    success: req.flash('success'),
+    fail: req.flash('error')
+  });
 });
 
 app.post("/register", function(req, res) {
 
-  User.register({
-    username: req.body.username
-  }, req.body.password, function(err, user) {
-    if (err) {
-      console.log(err);
-      res.redirect("/register");
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.send("succesfully authenticated");
-      });
-    }
-  });
+  if (req.body.password === req.body.secondPassword) {
+    User.register({
+      username: req.body.username
+    }, req.body.password, function(err, user) {
+      if (err) {
+        console.log(err);
+        req.flash('error', 'bu mail adresini kullanamazsiniz');
+        res.redirect("/register");
+      } else {
+        passport.authenticate("local")(req, res, function() {
+          req.flash('success', 'basarili bir sekilde uye oldunuz');
+          res.redirect("/");
+        });
+      }
+    });
+  } else {
+    req.flash('error', 'paralolar ayni degil');
+    res.redirect("/register");
+  }
+
+
 
 });
 
-app.post("/login", function(req, res) {
-
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password
-  });
-
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.send("succesfully authenticated");
-      });
-    }
-  })
-
-});
-
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  successFlash: 'basarili bir sekilde giris yaptiniz.',
+  failureRedirect: '/login',
+  failureFlash: 'hatali kullanici adi ya da sifre'
+}));
 
 
 
